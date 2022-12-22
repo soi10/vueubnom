@@ -1,13 +1,13 @@
 <template>
   <div class="container">
     <!-- Section: Timeline -->
+    <NameWbs :idwbs="id" />
     <section class="py-5">
       <ul class="timeline-with-icons">
         <li class="timeline-item mb-5">
           <span class="timeline-icon">
             <i class="fas fa-rocket text-primary fa-sm fa-fw"></i>
           </span>
-
           <div class="row">
             <div class="col-2">
               <h5 class="">สถานะ A0</h5>
@@ -139,6 +139,7 @@ import { useRoute, useRouter } from "vue-router";
 import Swal from "sweetalert2";
 
 import A0 from "../components/A0/ListData.vue";
+import NameWbs from "../components/NameWbs/NameWbs.vue";
 
 const store = useStore();
 store.commit("initializeStore");
