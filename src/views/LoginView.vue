@@ -36,8 +36,8 @@ import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { useStore } from "vuex";
 
-const username = ref("506341");
-const password = ref("Pea@2022/5++");
+const username = ref("");
+const password = ref("");
 
 const route = useRouter();
 const store = useStore();

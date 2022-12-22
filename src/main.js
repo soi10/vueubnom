@@ -9,7 +9,7 @@ import "vue-good-table-next/dist/vue-good-table-next.css";
 import VueMultiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
 
-axios.defaults.baseURL = "http://localhost:8080/";
+axios.defaults.baseURL = "http://omub.pea.co.th:443/";
 
 const app = createApp(App);
 app.component("multiselect", VueMultiselect);
