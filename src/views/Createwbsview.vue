@@ -5,10 +5,7 @@
         <div class="card">
           <h5 class="card-header">คู่มือ / วิธีทำ / เอกสาร</h5>
           <div class="card-body">
-            <p class="card-text">
-              With supporting text below as a natural lead-in to additional
-              content.
-            </p>
+            <p class="card-text">coming soon ...</p>
           </div>
         </div>
       </div>

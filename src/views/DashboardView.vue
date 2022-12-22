@@ -3,11 +3,11 @@
     <div class="row row-cols-1 row-cols-md-3 g-4">
       <div class="col" v-for="button in buttons" :key="button.id">
         <div class="card h-100">
-          <img
+          <!-- <img
             src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp"
             class="card-img-top"
             alt="Hollywood Sign on The Hill"
-          />
+          /> -->
           <div class="card-body">
             <h5 class="card-title">{{ button.title }}</h5>
             <p class="card-text">
@@ -33,11 +33,11 @@ const buttons = ref([
     button: "ติดตามงานหมายเลข WBS",
     url: "wbs",
   },
-  {
-    title: "Vic",
-    text: "Reynolds",
-    button: "vic.reynolds@test.com",
-    url: "",
-  },
+  // {
+  //   title: "Vic",
+  //   text: "Reynolds",
+  //   button: "vic.reynolds@test.com",
+  //   url: "",
+  // },
 ]);
 </script>
