@@ -29,23 +29,25 @@ const dataidwbs = {
   idwbs: wbsProps.idwbs,
 };
 
-axios
-  .post("/wbs/getwbsone", dataidwbs)
-  .then((response) => {
-    // console.log(response);
+async function getWbsOne() {
+  try {
+    const response = await axios.post("/wbs/getwbsone", dataidwbs);
     if (!response.data.wbs) {
+      // handle case where no data is returned
     } else {
       wbs.push(response.data.wbs);
     }
-  })
-  .catch((error) => {
+  } catch (error) {
     console.log(error);
     Swal.fire({
       title: "เกิดข้อผิดผลาด!",
       text: error,
       icon: "error",
     });
-  });
+  }
+}
+
+getWbsOne();
 </script>
 
 <style lang="scss" scoped></style>

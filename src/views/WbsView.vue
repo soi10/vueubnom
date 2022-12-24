@@ -149,20 +149,22 @@ const formYear = {
   BaName: BaName,
 };
 
-axios
-  .post("/wbs/getwbscounts", formYear)
-  .then((response) => {
+async function getWbsCounts() {
+  try {
+    const response = await axios.post("/wbs/getwbscounts", formYear);
     state.push(...response.data.wbs);
-  })
-  .catch((error) => {
+  } catch (error) {
     Swal.fire({
       title: "เกิดข้อผิดผลาด!",
-      text: "หมายเลข ระบบอาจจะมีปัญหา",
+      text: error,
       icon: "error",
     });
-  });
+  }
+}
 
-function onChange(event) {
+getWbsCounts();
+
+async function onChange(event) {
   const formYear = {
     yearWbs: event.target.value,
     BaName: BaName,
@@ -170,17 +172,15 @@ function onChange(event) {
 
   state.length = 0;
 
-  axios
-    .post("/wbs/getwbscounts", formYear)
-    .then((response) => {
-      state.push(...response.data.wbs);
-    })
-    .catch((error) => {
-      Swal.fire({
-        title: "เกิดข้อผิดผลาด!",
-        text: "หมายเลข ระบบอาจจะมีปัญหา",
-        icon: "error",
-      });
+  try {
+    const response = await axios.post("/wbs/getwbscounts", formYear);
+    state.push(...response.data.wbs);
+  } catch (error) {
+    Swal.fire({
+      title: "เกิดข้อผิดผลาด!",
+      text: "หมายเลข ระบบอาจจะมีปัญหา",
+      icon: "error",
     });
+  }
 }
 </script>

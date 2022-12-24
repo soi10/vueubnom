@@ -35,6 +35,7 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { useStore } from "vuex";
+import Swal from "sweetalert2";
 
 const username = ref("");
 const password = ref("");
@@ -42,7 +43,7 @@ const password = ref("");
 const route = useRouter();
 const store = useStore();
 
-function submitForm() {
+async function submitForm() {
   axios.defaults.headers.common["Authorization"] = "";
   localStorage.removeItem("access");
 
@@ -51,21 +52,23 @@ function submitForm() {
     password: password.value,
   };
 
-  axios
-    .post("/auth/login", formData)
-    .then((response) => {
-      const access = response.data.token;
+  try {
+    const response = await axios.post("/auth/login", formData);
+    const access = response.data.token;
 
-      store.commit("setAccess", access);
+    store.commit("setAccess", access);
 
-      axios.defaults.headers.common["Authorization"] = "Bearer " + access;
+    axios.defaults.headers.common["Authorization"] = "Bearer " + access;
 
-      localStorage.setItem("access", access);
+    localStorage.setItem("access", access);
 
-      route.push("/dashboard");
-    })
-    .catch((error) => {
-      console.log(error);
+    route.push("/dashboard");
+  } catch (error) {
+    Swal.fire({
+      title: "Error!",
+      text: error,
+      icon: "error",
     });
+  }
 }
 </script>

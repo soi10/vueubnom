@@ -145,7 +145,7 @@ const jobwbsOrder = ref(1);
 const jobwbsNextstep = ref("false");
 const jobwbsLocation = decoded.dataUser.BaName;
 
-function postJobwbs() {
+async function postJobwbs() {
   if (jobwbsName.value === "" || jobwbsExplain.value === "") {
     Swal.fire({
       title: "เกิดข้อผิดผลาด!",
@@ -162,19 +162,16 @@ function postJobwbs() {
       jobwbsLocation: jobwbsLocation,
       jobwbsOrder: jobwbsOrder.value,
     };
-    axios
-      .post("/jobwbs/post", dataJobwbs)
-      .then((response) => {
-        // console.log(response);
-        router.go(0);
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: "เกิดข้อผิดผลาด!",
-          text: "หมายเลขหัวข้อนี้ " + jobwbsName.value + " มีในระบบแล้ว",
-          icon: "error",
-        });
+    try {
+      const response = await axios.post("/jobwbs/post", dataJobwbs);
+      router.go(0);
+    } catch (error) {
+      Swal.fire({
+        title: "เกิดข้อผิดผลาด!",
+        text: "หมายเลขหัวข้อนี้ " + jobwbsName.value + " มีในระบบแล้ว",
+        icon: "error",
       });
+    }
   }
 }
 </script>

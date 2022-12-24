@@ -60,47 +60,45 @@ const dataJobwbs = {
 
 const state = reactive([]);
 
-axios
-  .post("/jobwbs/postjobwbs", dataJobwbs)
-  .then((response) => {
-    // console.log(response);
+async function postJobwbs() {
+  try {
+    const response = await axios.post("/jobwbs/postjobwbs", dataJobwbs);
     state.push(...response.data.jobwbs);
-  })
-  .catch((error) => {
+  } catch (error) {
     Swal.fire({
       title: "เกิดข้อผิดผลาด!",
-      text: "หมายเลข WBS " + jobwbsName.value + " มีในระบบแล้ว",
+      text: "หัวข้อนี้มีระบบแล้ว" + jobwbsName.value + " มีในระบบแล้ว",
       icon: "error",
     });
-  });
+  }
+}
 
-function deleteJobwbs(e) {
-  Swal.fire({
+postJobwbs();
+
+async function deleteJobwbs(e) {
+  const result = await Swal.fire({
     title: "คุณต้องการจะลบหัวข้อนี้ใช่ใหม",
     showCancelButton: true,
     confirmButtonText: "ลบข้อมูล",
     cancelButtonText: "ยกเลิก",
-  }).then((result) => {
-    /* Read more about isConfirmed, isDenied below */
-    if (result.isConfirmed) {
-      const dataJobwbs = {
-        jobwbsId: e.target.value,
-      };
-
-      axios
-        .post("/jobwbs/deletejobwbs", dataJobwbs)
-        .then((response) => {
-          router.go(0);
-        })
-        .catch((error) => {
-          Swal.fire({
-            title: "เกิดข้อผิดผลาด!",
-            text: error,
-            icon: "error",
-          });
-        });
-    }
   });
+
+  if (result.isConfirmed) {
+    const dataJobwbs = {
+      jobwbsId: e.target.value,
+    };
+
+    try {
+      await axios.post("/jobwbs/deletejobwbs", dataJobwbs);
+      router.go(0);
+    } catch (error) {
+      Swal.fire({
+        title: "เกิดข้อผิดผลาด!",
+        text: error,
+        icon: "error",
+      });
+    }
+  }
 }
 </script>
 

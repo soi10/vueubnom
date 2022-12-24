@@ -30,21 +30,22 @@ const dataJobwbs = {
 
 const state = reactive([]);
 
-axios
-  .post("/jobwbs/postjobwbsname", dataJobwbs)
-  .then((response) => {
+async function getJobwbsName() {
+  try {
+    const response = await axios.post("/jobwbs/postjobwbsname", dataJobwbs);
     if (!response.data.jobwbs) {
     } else {
       state.push(response.data.jobwbs);
     }
-  })
-  .catch((error) => {
+  } catch (error) {
     Swal.fire({
       title: "เกิดข้อผิดผลาด!",
       text: error,
       icon: "error",
     });
-  });
+  }
+}
+getJobwbsName();
 </script>
 
 <style lang="scss" scoped></style>

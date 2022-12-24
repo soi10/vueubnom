@@ -93,46 +93,44 @@ const nameWbs = ref("");
 const approveNumber = ref("");
 const yearWbs = ref("เลือกปีของหมาย WBS");
 
-function postDatawbs() {
-  if (
-    numberWbs.value === "" ||
-    nameWbs.value === "" ||
-    approveNumber.value === "" ||
-    yearWbs.value === "เลือกปีของหมาย WBS"
-  ) {
+async function postDatawbs() {
+  try {
+    if (
+      numberWbs.value === "" ||
+      nameWbs.value === "" ||
+      approveNumber.value === "" ||
+      yearWbs.value === "เลือกปีของหมาย WBS"
+    ) {
+      Swal.fire({
+        title: "เกิดข้อผิดผลาด!",
+        text: "กรอกชื่อมูลให้ครบถ้วน",
+        icon: "error",
+      });
+    } else {
+      const dataWbs = {
+        numberWbs: numberWbs.value,
+        nameWbs: nameWbs.value,
+        approveNumber: approveNumber.value,
+        yearWbs: yearWbs.value,
+        BaCode: decoded.dataUser.BaCode,
+        BaName: decoded.dataUser.BaName,
+        CostCenterName: decoded.dataUser.CostCenterName,
+        DepartmentFullName: decoded.dataUser.DepartmentFullName,
+        DepartmentShortName: decoded.dataUser.DepartmentShortName,
+        EmployeeId: decoded.dataUser.EmployeeId,
+        FullName: decoded.dataUser.FullName,
+        Position: decoded.dataUser.Position,
+      };
+
+      const response = await axios.post("/wbs/post", dataWbs);
+      router.go(-1);
+    }
+  } catch (error) {
     Swal.fire({
       title: "เกิดข้อผิดผลาด!",
-      text: "กรอกชื่อมูลให้ครบถ้วน",
+      text: "หมายเลข WBS " + numberWbs.value + " มีในระบบแล้ว",
       icon: "error",
     });
-  } else {
-    const dataWbs = {
-      numberWbs: numberWbs.value,
-      nameWbs: nameWbs.value,
-      approveNumber: approveNumber.value,
-      yearWbs: yearWbs.value,
-      BaCode: decoded.dataUser.BaCode,
-      BaName: decoded.dataUser.BaName,
-      CostCenterName: decoded.dataUser.CostCenterName,
-      DepartmentFullName: decoded.dataUser.DepartmentFullName,
-      DepartmentShortName: decoded.dataUser.DepartmentShortName,
-      EmployeeId: decoded.dataUser.EmployeeId,
-      FullName: decoded.dataUser.FullName,
-      Position: decoded.dataUser.Position,
-    };
-
-    axios
-      .post("/wbs/post", dataWbs)
-      .then((response) => {
-        router.go(-1);
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: "เกิดข้อผิดผลาด!",
-          text: "หมายเลข WBS " + numberWbs.value + " มีในระบบแล้ว",
-          icon: "error",
-        });
-      });
   }
 }
 </script>

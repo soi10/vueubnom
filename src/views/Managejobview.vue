@@ -7,7 +7,7 @@
           <div class="card">
             <div class="card-header">ดำเนินการ</div>
             <div class="card-body">
-              <h5 class="card-title">หมายเลข wbs : {{ wbs.numberWbs }}</h5>
+              <h5 class="card-title">หมายเลข WBS : {{ wbs.numberWbs }}</h5>
               <p class="card-text">ชื่องาน : {{ wbs.nameWbs }}</p>
               <p class="card-text">เลขที่อุนมัติ : {{ wbs.approveNumber }}</p>
               <p ref="wbsStatus" class="card-text">
@@ -19,12 +19,12 @@
             </div>
           </div>
         </div>
+        <NoteWbs />
       </div>
       <div class="col">
         <ListFile :idjob2="idjob2" />
-
         <form @submit.prevent="submitForm">
-          <div class="card">
+          <div class="card my-1">
             <div class="card-header">คู่มือ / เอกสาร / ข้อเสนอแนะ</div>
             <div class="card-body">
               <h5 class="card-title">อัพโหลดคู่มือ เอกสาร หรือข้อเสนอแนะ</h5>
@@ -96,6 +96,7 @@ import { useRouter, useRoute } from "vue-router";
 
 import ListFile from "../components/Managejob/ListFile.vue";
 import NameJob from "../components/Managejob/NameJob.vue";
+import NoteWbs from "../components/Managejob/NoteWbs.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -117,89 +118,88 @@ const dataidwbs = {
   idwbs: idwbs,
 };
 
-axios
-  .post("/wbs/getwbsone", dataidwbs)
-  .then((response) => {
-    // console.log(response);
+async function getWbsOne() {
+  try {
+    const response = await axios.post("/wbs/getwbsone", dataidwbs);
     if (!response.data.wbs) {
+      // handle no data case
     } else {
       wbs.push(response.data.wbs);
     }
-  })
-  .catch((error) => {
+  } catch (error) {
     console.log(error);
     Swal.fire({
       title: "เกิดข้อผิดผลาด!",
       text: error,
       icon: "error",
     });
-  });
-
-function submitForm() {
-  loading.value = true;
-  const data = new FormData();
-  data.append("fileUrl", file.value.files[0]);
-  data.append("fileName", fileName.value);
-  data.append("fileDetail", fileDetail.value);
-  data.append("fileOrder", fileOrder.value);
-  data.append("idJobwbs", idjob);
-
-  let config = {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  };
-
-  axios
-    .post("/jobwbs/uploadjobfile", data, config)
-    .then((response) => {
-      loading.value = false;
-      Swal.fire({
-        title: "",
-        text: "สำเร็จ",
-        icon: "success",
-      });
-      router.go(0);
-    })
-    .catch((error) => {
-      // console.log(error);
-      Swal.fire({
-        title: "เกิดข้อผิดผลาด!",
-        text: error,
-        icon: "error",
-      });
-    });
+  }
 }
 
-function worker() {
-  Swal.fire({
-    title: "คุณต้องการจะบันทึกว่าดำเดินการหัวข้อนี้แล้ว",
-    showCancelButton: true,
-    confirmButtonText: "ใช่",
-    cancelButtonText: "ยกเลิก",
-  }).then(async (result) => {
+getWbsOne();
+
+async function submitForm() {
+  loading.value = true;
+  try {
+    const data = new FormData();
+    data.append("fileUrl", file.value.files[0]);
+    data.append("fileName", fileName.value);
+    data.append("fileDetail", fileDetail.value);
+    data.append("fileOrder", fileOrder.value);
+    data.append("idJobwbs", idjob);
+
+    let config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    const response = await axios.post("/jobwbs/uploadjobfile", data, config);
+    loading.value = false;
+    Swal.fire({
+      title: "",
+      text: "สำเร็จ",
+      icon: "success",
+    });
+    router.go(0);
+  } catch (error) {
+    Swal.fire({
+      title: "เกิดข้อผิดผลาด!",
+      text: error,
+      icon: "error",
+    });
+  }
+}
+
+async function worker() {
+  try {
+    const result = await Swal.fire({
+      title: "คุณต้องการจะบันทึกว่าดำเดินการหัวข้อนี้แล้ว",
+      showCancelButton: true,
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ยกเลิก",
+    });
+
     /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed) {
-      try {
-        const response = await axios.post("/wbs/postwbsjobdone", {
-          idwbs: route.query.idwbs,
-          idJob: route.query.idjob,
-          jobStatus: wbs[0].wbsStatus,
-        });
-        Swal.fire({
-          title: "บันทึกข้อมูลแล้ว",
-          text: response.message,
-          icon: "success",
-        });
-      } catch (error) {
-        Swal.fire({
-          title: "เกิดข้อผิดผลาด!",
-          text: error,
-          icon: "error",
-        });
-      }
+      const response = await axios.post("/wbs/postwbsjobdone", {
+        idwbs: route.query.idwbs,
+        idJob: route.query.idjob,
+        jobStatus: wbs[0].wbsStatus,
+      });
+      Swal.fire({
+        title: "บันทึกข้อมูลแล้ว",
+        text: response.message,
+        icon: "success",
+      });
     }
-  });
+  } catch (error) {
+    Swal.fire({
+      title: "เกิดข้อผิดผลาด!",
+      text: error,
+      icon: "error",
+    });
+  }
 }
 </script>
 

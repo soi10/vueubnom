@@ -63,18 +63,20 @@ const formYear = {
   wbsStatus: route.query.status,
 };
 
-axios
-  .post("/wbs/getwbstables", formYear)
-  .then((response) => {
+async function getWbsTables() {
+  try {
+    const response = await axios.post("/wbs/getwbstables", formYear);
     state.wbsTables = response.data.wbs;
-  })
-  .catch((error) => {
+  } catch (error) {
     Swal.fire({
       title: "เกิดข้อผิดผลาด!",
       text: "หมายเลข ระบบอาจจะมีปัญหา",
       icon: "error",
     });
-  });
+  }
+}
+
+getWbsTables();
 
 const state = reactive({
   wbsTables: [],

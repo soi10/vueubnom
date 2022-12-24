@@ -11,7 +11,7 @@
             <button
               class="btn btn-danger float-end"
               :value="state.fileUrl"
-              @click="deletFilejob"
+              @click="deleteFilejob"
             >
               ลบข้อมูล
             </button>
@@ -48,49 +48,49 @@ const dataJobwbs = {
 
 const state = reactive([]);
 
-axios
-  .post("/jobwbs/postjobfileone", dataJobwbs)
-  .then((response) => {
+async function fetchFileJob() {
+  try {
+    const response = await axios.post("/jobwbs/postjobfileone", dataJobwbs);
     if (!response.data.fileJob.fileJob) {
+      // do nothing
     } else {
       state.push(...response.data.fileJob.fileJob);
     }
-  })
-  .catch((error) => {
+  } catch (error) {
     Swal.fire({
       title: "เกิดข้อผิดผลาด!",
       text: error,
       icon: "error",
     });
-  });
+  }
+}
 
-function deletFilejob(e) {
-  Swal.fire({
+fetchFileJob();
+
+async function deleteFilejob(e) {
+  const confirm = await Swal.fire({
     title: "คุณต้องการจะลบหัวข้อนี้ใช่ใหม",
     showCancelButton: true,
     confirmButtonText: "ลบข้อมูล",
     cancelButtonText: "ยกเลิก",
-  }).then((result) => {
-    /* Read more about isConfirmed, isDenied below */
-    if (result.isConfirmed) {
-      const dataJobwbs = {
-        fileUrl: e.target.value,
-      };
-
-      axios
-        .post("/jobwbs/deletejobfile", dataJobwbs)
-        .then((response) => {
-          router.go(0);
-        })
-        .catch((error) => {
-          Swal.fire({
-            title: "ไม่พบข้อมูล!",
-            text: error,
-            icon: "error",
-          });
-        });
-    }
   });
+
+  if (confirm.isConfirmed) {
+    const dataJobwbs = {
+      fileUrl: e.target.value,
+    };
+
+    try {
+      await axios.post("/jobwbs/deletejobfile", dataJobwbs);
+      router.go(0);
+    } catch (error) {
+      Swal.fire({
+        title: "ไม่พบข้อมูล!",
+        text: error,
+        icon: "error",
+      });
+    }
+  }
 }
 </script>
 
